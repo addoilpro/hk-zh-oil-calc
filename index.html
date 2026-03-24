@@ -2,214 +2,367 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>跨境入油成本計算器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>跨境入油計算器</title>
     <style>
         :root {
-            --primary-color: #007aff;
-            --bg-color: #f2f2f7;
-            --card-bg: #ffffff;
-            --text-main: #1c1c1e;
-            --text-sub: #8e8e93;
-            --success: #34c759;
-            --danger: #ff3b30;
+            --bg: #f2f2f7;
+            --card: #ffffff;
+            --primary: #007aff;
+            --text: #1c1c1e;
+            --text-secondary: #8e8e93;
+            --border: #e5e5ea;
+            --accent-green: #34c759;
+            --accent-red: #ff3b30;
+            --input-bg: rgba(0,0,0,0.03);
         }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background: var(--bg-color); 
-            padding: 15px; 
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #000000;
+                --card: #1c1c1e;
+                --text: #ffffff;
+                --text-secondary: #aeaeb2;
+                --border: #38383a;
+                --input-bg: rgba(255,255,255,0.05);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
-            color: var(--text-main); 
-            line-height: 1.4;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container { 
-            max-width: 500px; 
-            margin: 0 auto; 
-            background: var(--card-bg); 
-            padding: 20px; 
-            border-radius: 16px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.05); 
+        .app-container {
+            width: 100%;
+            max-width: 414px;
+            background: var(--card);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
 
-        h2 { text-align: center; color: var(--text-main); margin-bottom: 25px; font-weight: 700; }
-        
-        .input-group { margin-bottom: 18px; }
-        
-        label { 
-            display: block; 
-            margin-bottom: 6px; 
-            font-weight: 600; 
-            font-size: 14px; 
-            color: var(--text-main);
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 24px;
+            text-align: center;
+            letter-spacing: -0.5px;
         }
 
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1.5px solid #e5e5ea; 
-            border-radius: 10px; 
-            box-sizing: border-box; 
-            font-size: 16px; /* 防止 iOS 縮放 */
-            background: #fafafa;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            background: #fff;
-        }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-        button { 
-            width: 100%; 
-            padding: 16px; 
-            background: var(--primary-color); 
-            color: white; 
-            border: none; 
-            border-radius: 12px; 
-            font-size: 18px; 
+        .section-title {
+            font-size: 13px;
             font-weight: 600;
-            cursor: pointer; 
-            margin-top: 10px;
-            -webkit-tap-highlight-color: transparent;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin: 20px 0 8px 4px;
+            letter-spacing: 0.5px;
         }
 
-        button:active { opacity: 0.8; transform: scale(0.98); }
-
-        #result { 
-            margin-top: 25px; 
-            padding: 15px; 
-            border-radius: 12px; 
-            display: none; 
-            animation: fadeIn 0.3s ease-out;
+        .input-group-card {
+            background: var(--input-bg);
+            border-radius: 14px;
+            padding: 0 16px;
+            margin-bottom: 12px;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
 
-        .saving { background: #f2fbf4; border: 1px solid var(--success); }
-        .loss { background: #fff5f5; border: 1px solid var(--danger); }
+        .row:last-child { border-bottom: none; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 15px; }
-        .val { 
-            text-align: right; 
-            font-family: 'SF Mono', 'Roboto Mono', monospace; 
+        label { 
+            font-size: 16px; 
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+        }
+
+        input, select {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 17px;
+            font-weight: 600;
+            text-align: right;
+            outline: none;
+            padding: 0 4px;
+            -webkit-appearance: none;
+        }
+
+        select {
+            cursor: pointer;
+            padding-right: 4px;
+        }
+
+        .unit {
+            font-size: 12px;
+            color: var(--text-secondary);
+            width: 35px;
+            text-align: right;
+        }
+
+        .btn-calc {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 24px;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+        }
+
+        .btn-calc:active { 
+            transform: scale(0.96); 
+            opacity: 0.9; 
+        }
+
+        #result-area {
+            margin-top: 30px;
+            display: none;
+            animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .summary-box {
+            padding: 24px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .saving-bg { 
+            background: rgba(52, 199, 89, 0.12); 
+            color: var(--accent-green); 
+            border: 1px solid rgba(52, 199, 89, 0.3); 
+        }
+        
+        .loss-bg { 
+            background: rgba(255, 59, 48, 0.12); 
+            color: var(--accent-red); 
+            border: 1px solid rgba(255, 59, 48, 0.3); 
+        }
+
+        .detail-table {
+            width: 100%;
+            font-size: 15px;
+            border-collapse: collapse;
+        }
+
+        .detail-table td { padding: 10px 0; color: var(--text-secondary); }
+        .detail-table .val { 
+            color: var(--text); 
+            font-family: -apple-system, sans-serif; 
             font-weight: 600; 
+            text-align: right; 
+        }
+        
+        .total-row td { 
+            color: var(--text) !important; 
+            font-size: 18px; 
+            font-weight: 700; 
+            padding-top: 18px;
+            border-top: 1.5px solid var(--border);
         }
 
-        .total-row { border-top: 2px solid #ddd; font-weight: bold; color: var(--text-main); }
-        .total-row td { padding-top: 15px; font-size: 17px; }
-
-        .desc-text { font-size: 12px; color: var(--text-sub); font-weight: normal; margin-top: 2px; }
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>⛽ 跨境入油比較工具</h2>
-    
-    <div class="input-group">
-        <label>本次入油量 (L)</label>
-        <input type="number" id="volume" value="50" inputmode="decimal">
+<div class="app-container">
+    <h1>⛽ 跨境入油助手</h1>
+
+    <div class="section-title">入油預算</div>
+    <div class="input-group-card">
+        <div class="row">
+            <label>預計入油量</label>
+            <div class="input-wrapper">
+                <input type="number" id="volume" value="50" inputmode="decimal" style="width:80px">
+                <span class="unit">L</span>
+            </div>
+        </div>
+        <div class="row">
+            <label>HK 折實油價</label>
+            <div class="input-wrapper">
+                <input type="number" id="priceHK" value="19.6" step="0.1" inputmode="decimal" style="width:80px">
+                <span class="unit">HKD</span>
+            </div>
+        </div>
+        <div class="row">
+            <label>珠海折實油價</label>
+            <div class="input-wrapper">
+                <input type="number" id="priceZH" value="9.3" step="0.1" inputmode="decimal" style="width:80px">
+                <span class="unit">RMB</span>
+            </div>
+        </div>
     </div>
 
-    <div class="grid">
-        <div class="input-group">
-            <label>香港折實價 (HKD)</label>
-            <input type="number" id="priceHK" value="17.8" step="0.1" inputmode="decimal">
+    <div class="section-title">行程與路費</div>
+    <div class="input-group-card">
+        <div class="row">
+            <label>大橋路費狀態</label>
+            <div class="input-wrapper">
+                <select id="bridgeMode">
+                    <option value="normal">正常收費</option>
+                    <option value="free">免費期間</option>
+                </select>
+                <span class="unit">▼</span>
+            </div>
         </div>
-        <div class="input-group">
-            <label>珠海折實價 (RMB)</label>
-            <input type="number" id="priceZH" value="7.5" step="0.1" inputmode="decimal">
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="input-group">
-            <label>百公里油耗 (L/km)</label>
-            <input type="number" id="fuelConsumption" value="7.5" step="0.1" inputmode="decimal">
-        </div>
-        <div class="input-group">
+        <div class="row">
             <label>RMB 兌 HKD 匯率</label>
-            <input type="number" id="exchangeRate" value="1.15" step="0.01" inputmode="decimal">
+            <div class="input-wrapper">
+                <input type="number" id="exchangeRate" value="1.14" step="0.01" inputmode="decimal" style="width:80px">
+                <span class="unit">EX</span>
+            </div>
+        </div>
+        <div class="row">
+            <label>額外行駛總里程</label>
+            <div class="input-wrapper">
+                <input type="number" id="extraKm" value="170" inputmode="decimal" style="width:80px">
+                <span class="unit">km</span>
+            </div>
+        </div>
+        <div class="row">
+            <label>百公里油耗</label>
+            <div class="input-wrapper">
+                <input type="number" id="fuelConsumption" value="7.5" step="0.1" inputmode="decimal" style="width:80px">
+                <span class="unit">L</span>
+            </div>
         </div>
     </div>
 
-    <div class="input-group">
-        <label>
-            額外行駛總里程 (km)
-            <div class="desc-text">預設 150km (九龍↔珠海市區)</div>
-        </label>
-        <input type="number" id="extraKm" value="150" inputmode="decimal">
+    <div class="section-title">自定義成本</div>
+    <div class="input-group-card">
+        <div class="row">
+            <label>每公里保養損耗</label>
+            <div class="input-wrapper">
+                <input type="number" id="maintRate" value="0.15" step="0.01" inputmode="decimal" style="width:80px">
+                <span class="unit">$/km</span>
+            </div>
+        </div>
     </div>
 
-    <button onclick="calculate()">即時計算</button>
+    <button class="btn-calc" onclick="calculate()">即時計算比較</button>
 
-    <div id="result">
-        <h3 style="margin-top:0; font-size: 18px;">預算明細</h3>
-        <table>
-            <tr><td>香港方案總成本</td><td class="val" id="resHK" style="color:var(--text-sub)"></td></tr>
+    <div id="result-area">
+        <div id="summaryBox" class="summary-box">
+            <div id="verdictText" style="font-size: 22px; font-weight: 800;"></div>
+        </div>
+
+        <div class="section-title">成本細項預估 (HKD)</div>
+        <table class="detail-table">
+            <tr><td>留在香港總油費</td><td class="val" id="resHK"></td></tr>
             <tr><td>珠海純油費</td><td class="val" id="resZH_oil"></td></tr>
             <tr><td>大橋路費 (來回)</td><td class="val" id="resBridge"></td></tr>
             <tr><td>行程額外油耗</td><td class="val" id="resTravelFuel"></td></tr>
-            <tr><td>車輛保養 ($0.15/km)</td><td class="val" id="resMaint"></td></tr>
+            <tr><td>保養損耗成本</td><td class="val" id="resMaint"></td></tr>
             <tr class="total-row">
-                <td>珠海總開支</td>
+                <td>珠海方案總開支</td>
                 <td class="val" id="resZHTotal"></td>
             </tr>
         </table>
-        <div id="finalVerdict" style="text-align:center; font-weight:bold; font-size:18px; margin-top:20px; padding: 10px; border-radius: 8px;"></div>
+        
+        <div class="footer-note" id="feeNote">
+            * 包含港珠澳大橋來回 ¥300 經 95 折 ETC 優惠後成本
+        </div>
     </div>
 </div>
 
 <script>
 function calculate() {
-    const V = parseFloat(document.getElementById('volume').value) || 0;
-    const Phk = parseFloat(document.getElementById('priceHK').value) || 0;
-    const Pzh = parseFloat(document.getElementById('priceZH').value) || 0;
-    const consumption = parseFloat(document.getElementById('fuelConsumption').value) || 0;
-    const exRate = parseFloat(document.getElementById('exchangeRate').value) || 0;
-    const km = parseFloat(document.getElementById('extraKm').value) || 0;
-    const maintRate = 0.15;
+    const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
+    const bridgeMode = document.getElementById('bridgeMode').value;
+    
+    const V = getVal('volume');
+    const Phk = getVal('priceHK');
+    const Pzh = getVal('priceZH');
+    const consumption = getVal('fuelConsumption');
+    const exRate = getVal('exchangeRate');
+    const km = getVal('extraKm');
+    const maintRate = getVal('maintRate'); 
 
+    // 計算邏輯
     const costHK = V * Phk;
     const zhOilHKD = V * Pzh * exRate;
-    const bridgeHKD = (300 * 0.95) * exRate;
+    
+    // 路費邏輯
+    const bridgeHKD = bridgeMode === 'normal' ? (300 * 0.95) * exRate : 0;
+    
     const travelFuelHKD = (km / 100 * consumption) * (Pzh * exRate);
     const maintHKD = km * maintRate;
     const costZH = zhOilHKD + bridgeHKD + travelFuelHKD + maintHKD;
 
-    document.getElementById('resHK').innerText = '$' + costHK.toFixed(1);
-    document.getElementById('resZH_oil').innerText = '$' + zhOilHKD.toFixed(1);
-    document.getElementById('resBridge').innerText = '$' + bridgeHKD.toFixed(1);
-    document.getElementById('resTravelFuel').innerText = '$' + travelFuelHKD.toFixed(1);
-    document.getElementById('resMaint').innerText = '$' + maintHKD.toFixed(1);
-    document.getElementById('resZHTotal').innerText = '$' + costZH.toFixed(1);
+    // 格式化顯示
+    const fmt = (num) => '$' + num.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
+
+    document.getElementById('resHK').innerText = fmt(costHK);
+    document.getElementById('resZH_oil').innerText = fmt(zhOilHKD);
+    document.getElementById('resBridge').innerText = bridgeMode === 'free' ? '免費' : fmt(bridgeHKD);
+    document.getElementById('resTravelFuel').innerText = fmt(travelFuelHKD);
+    document.getElementById('resMaint').innerText = fmt(maintHKD);
+    document.getElementById('resZHTotal').innerText = fmt(costZH);
+
+    const feeNote = document.getElementById('feeNote');
+    if (bridgeMode === 'free') {
+        feeNote.innerText = '* 當前為免費通行期間，已扣除大橋路費成本';
+    } else {
+        feeNote.innerText = '* 包含港珠澳大橋來回 ¥300 經 95 折 ETC 優惠後成本';
+    }
 
     const diff = costHK - costZH;
-    const resultDiv = document.getElementById('result');
-    const verdict = document.getElementById('finalVerdict');
+    const resultArea = document.getElementById('result-area');
+    const summaryBox = document.getElementById('summaryBox');
+    const verdict = document.getElementById('verdictText');
 
-    resultDiv.style.display = 'block';
-    if (diff > 0) {
-        resultDiv.className = 'saving';
-        verdict.style.color = '#2c7a7b';
-        verdict.innerText = '✅ 珠海更抵：省下 $' + diff.toFixed(1);
-    } else {
-        resultDiv.className = 'loss';
-        verdict.style.color = '#c53030';
-        verdict.innerText = '❌ 香港更抵：省下 $' + Math.abs(diff).toFixed(1);
-    }
+    resultArea.style.display = 'block';
     
-    // 自動滾動到結果
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    if (diff > 0) {
+        summaryBox.className = 'summary-box saving-bg';
+        verdict.innerText = '✅ 珠海更平：省下 ' + fmt(diff);
+    } else {
+        summaryBox.className = 'summary-box loss-bg';
+        verdict.innerText = '❌ 香港更平：省下 ' + fmt(Math.abs(diff));
+    }
+
+    setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 100);
 }
 </script>
 
 </body>
 </html>
-
